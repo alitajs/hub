@@ -1,7 +1,7 @@
 {
-  "name": "umi hub",
+  "name": "alita-example-electron",
   "version": "1.0.0",
-  "description": "umi hub",
+  "description": "alita-example-electron",
   "main": "platforms/electron/main.js",
   "scripts": {
     "start": "electron-forge start",
