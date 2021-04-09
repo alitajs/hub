@@ -1,7 +1,7 @@
 {
-  "name": "umi hub",
+  "name": "umi-hub",
   "version": "1.0.0",
-  "description": "umi hub",
+  "description": "The Umi Hub is a standalone application that streamlines the way you find, download, and manage your Umi Projects and installations. In addition, you can manually add versions of the Editor that you have already installed on your machine to your Hub.",
   "main": "platforms/electron/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -71,7 +71,6 @@
     "prettier": "^2.2.1",
     "rollup": "^2.44.0",
     "stylelint": "^13.12.0",
-    "typescript": "^4.2.4",
     "yorkie": "^2.0.0"
   },
   "config": {
@@ -80,7 +79,8 @@
         "icon": "src/assets/Icon.icns",
         "title": "Umi Hub"
       },
-      "makers": [{
+      "makers": [
+        {
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "hub"

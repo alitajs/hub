@@ -1,6 +1,6 @@
 # umi hub
 
-Electron example with [alita](https://github.com/umijs/umi/) and [dva](https://github.com/dvajs/dva/).
+The Umi Hub is a standalone application that streamlines the way you find, download, and manage your Umi Projects and installations. In addition, you can manually add versions of the Editor that you have already installed on your machine to your Hub.
 
 ## 使用
 
