@@ -1,11 +1,13 @@
 import React, { FC, useEffect } from 'react';
 import { IndexModelState, ConnectProps, connect } from 'alita';
-import { Space, Button, Dropdown, Menu, PageHeader, Table, Tag } from 'antd';
-import { CaretDownOutlined, MoreOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Menu, PageHeader, Table, Tag } from 'antd';
+import { MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import is from 'electron-is';
+import isElectron from 'is-electron';
 import styles from './index.less';
-import yayImg from '@/assets/yay.jpg';
+
+const electron = window.require('electron');
+const { ipcRenderer } = electron;
 
 interface PageProps extends ConnectProps {
   index: IndexModelState;
@@ -17,6 +19,12 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
     dispatch?.({
       type: 'index/query',
     });
+    if (isElectron()) {
+      ipcRenderer.on('selectedDirectory', (e, path) => {
+        console.log(path);
+      });
+    }
+
     return () => {
       // 这里写一些需要消除副作用的代码
       // 如: 声明周期中写在 componentWillUnmount
@@ -132,7 +140,17 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
       <PageHeader
         title="项目"
         extra={[
-          <Button key="1" style={{ marginRight: '10px', width: '95px' }}>
+          <Button
+            key="1"
+            style={{ marginRight: '10px', width: '95px' }}
+            onClick={() => {
+              if (isElectron()) {
+                ipcRenderer.send('openDirectoryDialog', 'openDirectory');
+              } else {
+                console.log('选择文件夹只在应用中有效');
+              }
+            }}
+          >
             添加
           </Button>,
           <Button key="2" style={{ width: '95px' }} type="primary">
