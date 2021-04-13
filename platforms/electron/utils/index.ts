@@ -1,6 +1,10 @@
 import { existsSync, readFileSync } from 'fs';
 
 interface PackageInfo {
+  name: string;
+  description: string;
+  keywords: string[];
+  license: string;
   dependencies: any;
   devDependencies: any;
 }
@@ -18,18 +22,25 @@ export function getPkgInfo(pkgPath: string): PackageInfo {
 }
 
 export function isAlitaOrUmi(name: string) {
-  return /^(alita|umi|bigfish|dumi)/.test(name);
+  return /^(alita|umi|bigfish|dumi)$/.test(name);
 }
 
+export function getAlitaOrUmiVersion(pkg: PackageInfo): any[] {
+  const dependencies = {
+    ...pkg.dependencies,
+    ...pkg.devDependencies,
+  };
+  const keys = Object.keys(dependencies).filter((name) => {
+    return isAlitaOrUmi(name);
+  });
+  const data: any[] = [];
+  keys.forEach((key) => {
+    data.push(`${key}:${dependencies[key]}`);
+  });
+  return data;
+}
 export function checkIsAlitaPackage(pkg: PackageInfo): boolean {
-  return (
-    Object.keys({
-      ...pkg.dependencies,
-      ...pkg.devDependencies,
-    }).filter((name) => {
-      return isAlitaOrUmi(name);
-    }).length > 0
-  );
+  return getAlitaOrUmiVersion(pkg).length > 0;
 }
 
 export function checkIsAlitaPackageFromPkgPath(pkgPath: string): boolean {

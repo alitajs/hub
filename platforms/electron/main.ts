@@ -1,8 +1,9 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
 import { join } from 'path';
+import { statSync } from 'fs';
 import is from 'electron-is';
 import log from 'electron-log';
-import { getPkgInfo, checkIsAlitaPackage } from './utils';
+import { getPkgInfo, getAlitaOrUmiVersion } from './utils';
 
 log.transports.file.level = 'info';
 log.info('(main/index) app start');
@@ -56,9 +57,19 @@ ipcMain.on('openDirectoryDialog', function (event, p) {
     .then((result) => {
       if (result.filePaths && result.filePaths[0]) {
         const pkg = getPkgInfo(join(result.filePaths[0], 'package.json'));
-        const isAlita = checkIsAlitaPackage(pkg);
-        if (isAlita) {
-          event.sender.send('selectedDirectory', pkg);
+        const statInfo = statSync(result.filePaths[0]);
+        const version = getAlitaOrUmiVersion(pkg);
+        if (version.length) {
+          event.sender.send('selectedDirectory', {
+            name: pkg.name,
+            description: pkg.description,
+            keywords: pkg.keywords,
+            license: pkg.license,
+            version: version[0],
+            key: result.filePaths[0],
+            mtimeMs: statInfo.mtimeMs,
+            blksize: statInfo.blksize,
+          });
         } else {
           dialog.showMessageBox({
             type: 'error',
@@ -70,4 +81,7 @@ ipcMain.on('openDirectoryDialog', function (event, p) {
     .catch((err) => {
       log.error(err);
     });
+});
+ipcMain.on('openPath', function (event, p) {
+  shell.openPath(p);
 });
