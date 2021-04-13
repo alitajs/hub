@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "esnext",
     "moduleResolution": "node",
     "jsx": "preserve",
     "allowJs": true,
+    "baseUrl": ".",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "suppressImplicitAnyIndexErrors": true,
-    "declaration": true,
     "skipLibCheck": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@@/*": ["./src/.umi/*"]
-    }
-  }
+    "declaration": false // 是否自动创建类型声明文件
+  },
+  "exclude": ["**/www/**"]
 }

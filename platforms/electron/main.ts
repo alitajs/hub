@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { join } from 'path';
 import is from 'electron-is';
 import log from 'electron-log';
+import { getPkgInfo, checkIsAlitaPackage } from './utils';
 
 log.transports.file.level = 'info';
 log.info('(main/index) app start');
@@ -53,10 +54,17 @@ ipcMain.on('openDirectoryDialog', function (event, p) {
   dialog
     .showOpenDialog({ properties: [p] })
     .then((result) => {
-      log.info(result.canceled);
-      log.info(result.filePaths);
-      if (result.filePaths) {
-        event.sender.send('selectedDirectory', result.filePaths[0]);
+      if (result.filePaths && result.filePaths[0]) {
+        const pkg = getPkgInfo(join(result.filePaths[0], 'package.json'));
+        const isAlita = checkIsAlitaPackage(pkg);
+        if (isAlita) {
+          event.sender.send('selectedDirectory', pkg);
+        } else {
+          dialog.showMessageBox({
+            type: 'error',
+            message: '请选择一个正确的项目目录！',
+          });
+        }
       }
     })
     .catch((err) => {
