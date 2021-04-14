@@ -3,6 +3,7 @@ import { join } from 'path';
 import { statSync } from 'fs';
 import is from 'electron-is';
 import log from 'electron-log';
+import launchEditor from '@umijs/launch-editor';
 import { getPkgInfo, getAlitaOrUmiVersion } from './utils';
 
 log.transports.file.level = 'info';
@@ -30,6 +31,20 @@ function createWindow() {
     },
   });
   win.loadURL(getPath());
+  // @ts-ignore
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url === 'about:blank') {
+      return {
+        frame: false,
+        fullscreenable: false,
+        backgroundColor: 'black',
+        webPreferences: {
+          preload: 'my-child-window-preload-script.js',
+        },
+      };
+    }
+    return false;
+  });
 }
 
 app.whenReady().then(() => {
@@ -50,7 +65,18 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
+ipcMain.on('launchEditor', async (event, p) => {
+  try {
+    const res = await launchEditor(p);
+    // if (res && res.success) {
+    //   callback.success(res);
+    // } else {
+    //   callback.failure(res);
+    // }
+  } catch (e) {
+    // callback.failure(e);
+  }
+});
 ipcMain.on('openDirectoryDialog', function (event, p) {
   dialog
     .showOpenDialog({ properties: [p] })

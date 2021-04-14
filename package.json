@@ -47,6 +47,7 @@
   },
   "homepage": "https://github.com/xiaohuoni/hub#readme",
   "dependencies": {
+    "@umijs/launch-editor": "^1.0.1",
     "alita": "2.8.2-beta.1",
     "electron-debug": "^3.2.0",
     "electron-is": "^3.0.0",
