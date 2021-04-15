@@ -80,12 +80,14 @@
   },
   "config": {
     "forge": {
+      "electronPackagerConfig": {
+        "appBundleId": "com.alitajs.hub"
+      },
       "packagerConfig": {
         "icon": "src/assets/Icon.icns",
         "title": "Umi Hub"
       },
-      "makers": [
-        {
+      "makers": [{
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "hub"

@@ -39,7 +39,7 @@ const CreatePage: FC<CreatePageProps> = () => {
           <p>模版</p>
           <List
             className={styles.list}
-            grid={{ gutter: 16, column: 2 }}
+            grid={{ gutter: 16, column: 3 }}
             dataSource={data}
             renderItem={(item) => (
               <List.Item

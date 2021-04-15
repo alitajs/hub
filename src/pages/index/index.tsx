@@ -25,6 +25,21 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
       onClick={({ key }) => {
         switch (key) {
           case '1':
+            confirm({
+              title: `在编辑器中打开项目${data.name}?`,
+              icon: <QuestionOutlined />,
+              content: data.key,
+              okText: '确定',
+              cancelText: '取消',
+              onOk() {
+                dispatch?.({
+                  type: 'global/sendIpc',
+                  payload: { type: 'launchEditor', data: data.key },
+                });
+              },
+            });
+            break;
+          case '2':
             dispatch?.({ type: 'global/sendIpc', payload: { type: 'openPath', data: data.key } });
             break;
           case '4':
@@ -35,8 +50,8 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
         }
       }}
     >
-      <Menu.Item key="1">在 Finder 中显示</Menu.Item>
-      <Menu.Item key="2">修改备注</Menu.Item>
+      <Menu.Item key="1">在编辑器中打开</Menu.Item>
+      <Menu.Item key="2">在 Finder 中显示</Menu.Item>
       <Menu.Item key="3">修改标签</Menu.Item>
       <Menu.Item key="4">
         <Popconfirm
@@ -135,37 +150,17 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
             style={{ width: '95px' }}
             type="primary"
             onClick={() => {
-              window.open('/#/create');
+              dispatch?.({
+                type: 'global/sendIpc',
+                payload: { type: 'openWindos', data: '/#/create' },
+              });
             }}
           >
             新建
           </Button>,
         ]}
       ></PageHeader>
-      <Table
-        columns={columns}
-        dataSource={list}
-        scroll={{ y: 290 }}
-        onRow={(record) => {
-          return {
-            onClick: () => {
-              confirm({
-                title: `在编辑器中打开项目${record.name}?`,
-                icon: <QuestionOutlined />,
-                content: record.key,
-                okText: '确定',
-                cancelText: '取消',
-                onOk() {
-                  dispatch?.({
-                    type: 'global/sendIpc',
-                    payload: { type: 'launchEditor', data: record.key },
-                  });
-                },
-              });
-            }, // 点击行
-          };
-        }}
-      />
+      <Table columns={columns} dataSource={list} scroll={{ y: 290 }} />
     </div>
   );
 };

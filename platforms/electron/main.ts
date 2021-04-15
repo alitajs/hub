@@ -12,15 +12,19 @@ log.info('(main/index) app start');
 if (is.dev()) {
   require('electron-debug')(); // eslint-disable-line global-require
 }
-function getPath() {
-  let path = `file://${join(__dirname, 'www')}/index.html`;
+function getPath(hash: string) {
+  let path = `file://${join(__dirname, 'www')}/index.html${hash}`;
   if (is.dev()) {
-    path = 'http://127.0.0.1:8000/';
+    path = `http://127.0.0.1:8000${hash}`;
   }
   return path;
 }
-
-function createWindow() {
+const pageList = {};
+function createWindow(hash: string = '') {
+  if (pageList[hash]) {
+    pageList[hash].show();
+    return pageList[hash];
+  }
   const win = new BrowserWindow({
     width: 980,
     height: 600,
@@ -30,31 +34,22 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-  win.loadURL(getPath());
-  // @ts-ignore
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url === 'about:blank') {
-      return {
-        frame: false,
-        fullscreenable: false,
-        backgroundColor: 'black',
-        webPreferences: {
-          preload: 'my-child-window-preload-script.js',
-        },
-      };
-    }
-    return false;
+  win.loadURL(getPath(hash));
+  win.on('close', () => {
+    pageList[hash] = null;
   });
+  pageList[hash] = win;
+  return win;
 }
 
 app.whenReady().then(() => {
   log.info('(main/index) app ready');
-  createWindow();
+  createWindow('/');
 
   app.on('activate', () => {
     log.info('(main/index) app activate');
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      createWindow('/');
     }
   });
 });
@@ -68,16 +63,24 @@ app.on('window-all-closed', () => {
 ipcMain.on('launchEditor', async (event, p) => {
   try {
     const res = await launchEditor(p);
-    // if (res && res.success) {
-    //   callback.success(res);
-    // } else {
-    //   callback.failure(res);
-    // }
+    // @ts-ignore
+    if (res && !res.success) {
+      dialog.showMessageBox({
+        type: 'error',
+        message: '开启失败，请确认项目路径是否正确！',
+      });
+    }
   } catch (e) {
-    // callback.failure(e);
+    dialog.showMessageBox({
+      type: 'error',
+      message: '开启失败，请确认项目路径是否正确！',
+    });
   }
 });
-ipcMain.on('openDirectoryDialog', function (event, p) {
+ipcMain.on('openWindos', (event, p) => {
+  createWindow(p);
+});
+ipcMain.on('openDirectoryDialog', (event, p) => {
   dialog
     .showOpenDialog({ properties: [p] })
     .then((result) => {
@@ -108,6 +111,6 @@ ipcMain.on('openDirectoryDialog', function (event, p) {
       log.error(err);
     });
 });
-ipcMain.on('openPath', function (event, p) {
+ipcMain.on('openPath', (event, p) => {
   shell.openPath(p);
 });
