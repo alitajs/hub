@@ -4,14 +4,14 @@ The Umi Hub is a standalone application that streamlines the way you find, downl
 
 ## 使用
 
-安装依赖。
+### 安装依赖。
 
 ```bash
 # 安装依赖
 $ yarn
 ```
 
-启动本地调试。
+### 启动本地调试。
 
 ```bash
 $ yarn dev
@@ -25,7 +25,11 @@ $ yarn dev
 $ yarn start
 ```
 
-打包。
+### 热加载
+
+文件编译是自动热加载的， electron 无法实现热加载，但是你可以在执行 `yarn start` 的窗口输入 `rs` 来重启服务。
+
+### 打包。
 
 ```bash
 $ yarn build // 先执行build，同样你可以分开运行。

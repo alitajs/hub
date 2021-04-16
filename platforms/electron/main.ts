@@ -1,7 +1,15 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import is from 'electron-is';
 import log from 'electron-log';
-import { openInEditor, openWindos, selectAlitaPackage } from './actions';
+import {
+  openInEditor,
+  openWindos,
+  selectAlitaPackage,
+  getNpmClients,
+  selectDirectory,
+  setUmiHubConfig,
+  getUmiHubConfig,
+} from './actions';
 import { createWindow } from './createWindow';
 
 log.transports.file.level = 'info';
@@ -42,8 +50,8 @@ app.on('window-all-closed', () => {
  * 如果事件有副作用，那需要sent(SocketPrefix,{ type:`${type}/${action}`,data:any })
  */
 ipcMain.on('MockSocketRequest', (event, action: IAction) => {
-  const { type, payload } = action;
-  const { path } = payload;
+  const { type = '', payload = {} } = action;
+  const { path = '' } = payload;
   switch (type) {
     case 'openInEditor':
       openInEditor(path);
@@ -56,6 +64,18 @@ ipcMain.on('MockSocketRequest', (event, action: IAction) => {
       break;
     case 'openPath':
       shell.openPath(path);
+      break;
+    case 'getNpmClients':
+      getNpmClients(event.sender);
+      break;
+    case 'selectDirectory':
+      selectDirectory(event.sender);
+      break;
+    case '@@storage/setUmiHubConfig':
+      setUmiHubConfig(event.sender, payload);
+      break;
+    case '@@storage/getUmiHubConfig':
+      getUmiHubConfig(event.sender);
       break;
     default:
       break;

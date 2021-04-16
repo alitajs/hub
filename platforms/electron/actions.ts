@@ -5,7 +5,11 @@ import launchEditor from '@umijs/launch-editor';
 import { statSync } from 'fs';
 import { join } from 'path';
 import { createWindow } from './createWindow';
-import { getPkgInfo, getAlitaOrUmiVersion } from './utils';
+import { getPkgInfo, getAlitaOrUmiVersion, getNpmClient } from './utils';
+import {
+  getUmiHubConfig as _getUmiHubConfig,
+  setUmiHubConfig as _setUmiHubConfig,
+} from './storage';
 
 type PropertiesType =
   | 'openFile'
@@ -55,12 +59,13 @@ export const openWindos = (path: string) => {
  * @param sender 当前事件的 sender
  */
 export const selectDirectory = (sender: WebContents) => {
+  // const defaultPath = _getUmiHubConfig()?.baseDir || '';
   dialog
     .showOpenDialog({ properties: ['openDirectory'] })
     .then((result) => {
       if (result.filePaths && result.filePaths[0]) {
         sender.send(SocketPrefix, {
-          type: 'selectAlitaPackage/success',
+          type: 'selectDirectory/success',
           data: {
             path: result.filePaths[0],
           },
@@ -109,4 +114,55 @@ export const selectAlitaPackage = (sender: WebContents) => {
     .catch((err) => {
       log.error(err);
     });
+};
+
+/**
+ * 获取 ['tnpm', 'cnpm', 'npm', 'ayarn', 'tyarn', 'yarn']
+ * @param sender
+ */
+export const getNpmClients = async (sender: WebContents) => {
+  const npmClients = getNpmClient();
+  sender.send(SocketPrefix, {
+    type: 'getNpmClients/success',
+    data: npmClients,
+  });
+};
+
+export const setUmiHubConfig = async (sender: WebContents, payload: any) => {
+  try {
+    _setUmiHubConfig(payload);
+    sender.send(SocketPrefix, {
+      type: '@@storage/setUmiHubConfig/success',
+      data: {
+        success: true,
+      },
+    });
+  } catch (error) {
+    sender.send(SocketPrefix, {
+      type: '@@storage/setUmiHubConfig/failure',
+      data: {
+        success: false,
+        message: error.message,
+      },
+    });
+  }
+};
+
+export const getUmiHubConfig = async (sender: WebContents) => {
+  try {
+    const data = await _getUmiHubConfig();
+    console.log(data);
+    sender.send(SocketPrefix, {
+      type: '@@storage/getUmiHubConfig/success',
+      data,
+    });
+  } catch (error) {
+    sender.send(SocketPrefix, {
+      type: '@@storage/getUmiHubConfig/failure',
+      data: {
+        success: false,
+        message: error.message,
+      },
+    });
+  }
 };

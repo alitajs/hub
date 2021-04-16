@@ -13,7 +13,7 @@ function callback(key) {
   console.log(key);
 }
 const listData = [] as any;
-for (let i = 0; i < 23; i++) {
+for (let i = 0; i < 23; ) {
   listData.push({
     href: 'https://ant.design',
     title: `ant design part ${i}`,
@@ -23,6 +23,7 @@ for (let i = 0; i < 23; i++) {
     content:
       'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
   });
+  i += 1;
 }
 const IconText = ({ icon, text }) => (
   <Space>

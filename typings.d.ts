@@ -12,6 +12,7 @@ declare module '*.gif';
 declare module '*.bmp';
 declare module '*.tiff';
 declare module '*.json';
+declare module 'binary-mirror-config';
 
 declare global {
   interface Window {

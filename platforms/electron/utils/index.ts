@@ -1,4 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
+import got from 'got';
+import { execSync } from 'child_process';
 
 interface PackageInfo {
   name: string;
@@ -72,3 +74,45 @@ export function checkIsAlitaPackage(pkg: PackageInfo): boolean {
 export function checkIsAlitaPackageFromPkgPath(pkgPath: string): boolean {
   return checkIsAlitaPackage(getPkgInfo(pkgPath));
 }
+
+/**
+ * 通过 npm CDN url 获取数据
+ * @param pkg 包名
+ */
+export async function fetchCDNData({ pkg = '', summary = 'db.json', version = 'latest' }) {
+  const prefixCDN = `https://cdn.jsdelivr.net/npm/${pkg}@${version}`;
+  try {
+    const { body } = await got(`${prefixCDN}/${summary}`);
+    return {
+      data: JSON.parse(body),
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: error.message,
+      data: undefined,
+      success: false,
+    };
+  }
+}
+
+let npmClients: string[] = [];
+
+/**
+ * 获取当前使用的npm
+ * @returns string []
+ */
+export const getNpmClient = () => {
+  if (!npmClients) return npmClients;
+  const ret = ['tnpm', 'cnpm', 'npm', 'ayarn', 'tyarn', 'yarn'].filter((npmClient) => {
+    try {
+      execSync(`${npmClient} --version`, { stdio: 'ignore' });
+      return true;
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+    return false;
+  });
+
+  npmClients = ret;
+  return ret;
+};

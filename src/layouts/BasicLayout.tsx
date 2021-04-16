@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import { Layout, Menu, Breadcrumb, Avatar } from 'antd';
+import { Layout, Menu, Avatar } from 'antd';
 import type { ConnectProps } from 'alita';
 import { HomeOutlined, ScheduleOutlined, CommentOutlined, SettingFilled } from '@ant-design/icons';
 import styles from './index.less';
-import logoImg from '@/assets/playstore.png';
+import { callRemote } from '@/services/socket';
 
-const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 interface PageProps extends ConnectProps {}
 
 const MenuLayout: FC<PageProps> = ({ children, location, history }) => {
   const { pathname } = location;
+
+  const [config, setConfig] = useState<any>({});
+  const init = async () => {
+    if (config && config.name) return;
+    const data = await callRemote({ type: '@@storage/getUmiHubConfig', payload: {} });
+    if (data && data.name) {
+      setConfig(data);
+    } else {
+      history.push('/register');
+    }
+  };
+  useEffect(() => {
+    init();
+  }, [pathname]);
 
   return (
     <Layout className={styles.center}>
@@ -23,7 +36,8 @@ const MenuLayout: FC<PageProps> = ({ children, location, history }) => {
         </div>
         <div className={styles.user}>
           <SettingFilled style={{ fontSize: '18px', marginRight: '15px' }} />
-          <span>陈小聪</span>
+          <Avatar src={`https://avatars.githubusercontent.com/${config?.githubid}`} />
+          {/* <span style={{ marginLeft: '15px' }}>{config?.name || 'dev'}</span> */}
         </div>
       </Header>
       <Layout>

@@ -1,9 +1,6 @@
-import { getApp } from '@@/plugin-dva/dva';
-
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
 
-const app = getApp();
 const messageHandlers: any[] = [];
 const SocketPrefix = 'SocketResponse';
 
@@ -23,9 +20,11 @@ ipcRenderer.on(SocketPrefix, (e, payload) => {
   // app.dispatch?.({ type: 'index/addList', payload: pkg });
 });
 
-export function callRemote<T = object, K = object>(action: IAction<T, K>): Promise<{ data: K }> {
+export function callRemote<T = any, K = any>(action: IAction<T, K>): Promise<{ data: K }> {
   return new Promise((resolve, reject) => {
     function handler({ type, data }: { type: string; data: any }) {
+      console.log(type);
+      console.log(data);
       if (type === `${action.type}/success`) {
         if (!action.keep) removeHandler();
         resolve(data);

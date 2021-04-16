@@ -1,0 +1,13 @@
+{
+  "createAppTpl": [
+    {
+      "name": "alita",
+      "tsUrl": "https://github.com/umi-hub/alita-demo-ts",
+      "jsUrl": "https://github.com/umi-hub/alita-demo-js",
+      "images": "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
+      "description.cn": "alita 项目的空白模版",
+      "description.en": "First alita demo"
+    }
+  ],
+  "dbVersion": 1
+}
