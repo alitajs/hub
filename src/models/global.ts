@@ -1,7 +1,4 @@
-import { Effect, Reducer } from 'alita';
-
-const electron = window.require('electron');
-const { ipcRenderer } = electron;
+import type { Reducer } from 'alita';
 
 export interface GlobalModelState {
   loading: boolean;
@@ -10,9 +7,7 @@ export interface GlobalModelState {
 export interface GlobalModelType {
   namespace: 'global';
   state: GlobalModelState;
-  effects: {
-    sendIpc: Effect;
-  };
+  effects: {};
   reducers: {
     save: Reducer<GlobalModelState>;
   };
@@ -25,16 +20,7 @@ const IndexModel: GlobalModelType = {
     loading: false,
   },
 
-  effects: {
-    *sendIpc({ payload }, { put }) {
-      const { type, data = '' } = payload;
-      ipcRenderer.send(type, data);
-      yield put({
-        type: 'save',
-        payload: { loading: true },
-      });
-    },
-  },
+  effects: {},
   reducers: {
     save(state, action) {
       return {

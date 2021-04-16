@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import type { FC } from 'react';
-import { useRequest, Helmet } from 'alita';
+import { Helmet } from 'alita';
 import { Button, Row, Col, List, Card, Form, Input } from 'antd';
-import { EditOutlined, EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import FooterToolbar from '@/components/FooterToolbar';
 
 import styles from './index.less';

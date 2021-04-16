@@ -3,6 +3,8 @@ import { IndexModelState, ConnectProps, connect, GlobalModelState } from 'alita'
 import { Button, Dropdown, Menu, PageHeader, Table, Modal, Popconfirm } from 'antd';
 import { MoreOutlined, QuestionOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { callRemote } from '@/services/socket';
+
 import styles from './index.less';
 
 const { confirm } = Modal;
@@ -32,15 +34,22 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
               okText: '确定',
               cancelText: '取消',
               onOk() {
-                dispatch?.({
-                  type: 'global/sendIpc',
-                  payload: { type: 'launchEditor', data: data.key },
+                callRemote({
+                  type: 'openInEditor',
+                  payload: {
+                    path: data.key,
+                  },
                 });
               },
             });
             break;
           case '2':
-            dispatch?.({ type: 'global/sendIpc', payload: { type: 'openPath', data: data.key } });
+            callRemote({
+              type: 'openPath',
+              payload: {
+                path: data.key,
+              },
+            });
             break;
           case '4':
             //
@@ -136,11 +145,14 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
           <Button
             key="1"
             style={{ marginRight: '10px', width: '95px' }}
-            onClick={() => {
-              dispatch?.({
-                type: 'global/sendIpc',
-                payload: { type: 'openDirectoryDialog', data: 'openDirectory' },
+            onClick={async () => {
+              const data = await callRemote({
+                type: 'selectAlitaPackage',
+                payload: {
+                  type: 'openDirectory',
+                },
               });
+              dispatch?.({ type: 'index/addList', payload: data });
             }}
           >
             添加
@@ -149,10 +161,12 @@ const IndexPage: FC<PageProps> = ({ index, dispatch }) => {
             key="2"
             style={{ width: '95px' }}
             type="primary"
-            onClick={() => {
-              dispatch?.({
-                type: 'global/sendIpc',
-                payload: { type: 'openWindos', data: '/#/create' },
+            onClick={async () => {
+              await callRemote({
+                type: 'openWindos',
+                payload: {
+                  path: '/#/create',
+                },
               });
             }}
           >
