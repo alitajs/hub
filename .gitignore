@@ -21,3 +21,4 @@ platforms/electron/www
 platforms/electron/main.js
 platforms/electron/main.d.ts
 /out
+.el
