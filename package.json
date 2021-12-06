@@ -4,9 +4,9 @@
   "description": "The Umi Hub is a standalone application that streamlines the way you find, download, and manage your umi Projects and installations. In addition, you can manually add versions of the Editor that you have already installed on your machine to your Hub.",
   "main": ".el/main/index.js",
   "scripts": {
-    "start" : "el start --engine=umi",
-    "dev": "el start --engine=umi",
-    "build": "el build --engine=umi",
+    "start" : "PORT=8001 el start --engine=umi --src=platforms/electron",
+    "dev": "el start --engine=umi --src=platforms/electron",
+    "build": "el build --engine=umi --src=platforms/electron",
     "dev:renderer": "alita dev",
     "build:renderer": "alita build",
     "package": "electron-forge package",
@@ -46,19 +46,19 @@
   "homepage": "https://github.com/xiaohuoni/hub#readme",
   "dependencies": {
     "@umijs/launch-editor": "^1.0.1",
-    "alita": "2.8.29",
     "binary-mirror-config": "^1.30.0",
     "cross-spawn": "^7.0.3",
     "electron-debug": "^3.2.0",
     "electron-is": "^3.0.0",
     "electron-json-storage": "^4.5.0",
-    "electron-lab": "^0.2.0-11",
     "electron-log": "^4.3.4",
-    "electron-squirrel-startup": "^1.0.0",
-    "got": "^11.8.2",
-    "is-electron": "^2.2.0"
+    "got": "^11.8.2"
   },
   "devDependencies": {
+    "electron-lab": "^0.2.0-12",
+    "alita": "2.8.29",
+    "electron-squirrel-startup": "^1.0.0",
+    "is-electron": "^2.2.0",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",

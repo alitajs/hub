@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 import { BrowserWindow } from 'electron';
 import is from 'electron-is';
 import { join } from 'path';
@@ -36,7 +38,8 @@ export const createWindow = (hash: string = '') => {
       contextIsolation: false,
     },
   });
-  win.loadURL(getPath(hash));
+  const entryJsPath = join(__dirname, '../entry.js');
+  win.loadURL(require(entryJsPath));
   win.on('close', () => {
     pageList[hash] = null;
   });
